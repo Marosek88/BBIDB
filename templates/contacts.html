@@ -1,0 +1,166 @@
+{% extends 'base.html' %} 
+
+{% block head %}
+<title>BBI DB - Contacts</title>
+{% endblock %} 
+
+{% block body %}
+
+<div style="padding-left: 20px;">
+    <h2><i class="fas fa-chalkboard-teacher"></i> BBIDB Contacts List </h2>
+</div>
+<hr>
+
+<div class="container-fluid options_box">
+
+    <div>
+        <a href="{% url 'bbidb:contact_add' %}"><button class="btn btn-primary">Add Contact</button></a>
+        <a href="{% url 'bbidb:import_multiple' %}"><button class="btn btn-primary">Import Many</button></a>
+    </div>
+
+    <form action="{% url 'bbidb:contact_action' %}" method="post" id="action_form">
+        {% csrf_token %}
+
+        <div class="btn-group btn-group-toggle" data-toggle="buttons" style="float: right;">
+            <label class="btn btn-primary active">
+                    <input type="radio" name="action_no" value="-1" autocomplete="off" onchange="action_menu('-1')"> Off
+                </label>
+            <label class="btn btn-primary">
+                    <input type="radio" name="action_no" value="add_to_project" autocomplete="off"
+                           onchange="action_menu('add_to_project')"> Add To Project
+                </label>
+            <label class="btn btn-primary">
+                    <input type="radio" name="action_no" value="archive" autocomplete="off"
+                           onchange="action_menu('archive')"> Remove To Archive
+                </label>
+        </div>
+
+
+        <div id="project_no" style="display: none;">
+            <select name="project_no" title="Select Project">
+                    <option name="project" value="-1" hidden>Choose Project</option>
+                    {% for project in projects %}
+                        <option name="project" value="{{ project.id }}">{{ project.name }}</option>
+                    {% endfor %}
+                </select>
+        </div>
+
+        <div id="submit_button" style="display: none;">
+            <input type="submit" id="submit_button" class="btn btn-primary btn-lg" value="Go">
+        </div>
+    </form>
+
+</div>
+<br>
+
+<table id="contacts_table" class="display" border='2' align="center" style="width:100%">
+
+    <caption><i>BBIDB Contacts</i></caption>
+
+    <thead>
+        <tr>
+            <th><input type="checkbox" onClick="toggle(this)" title="Select All"></th>
+            <th>Category</th>
+            <th>Company</th>
+            <th>Name</th>
+            <th>Contact</th>
+            <th>Remarks</th>
+            <th>Edit</th>
+        </tr>
+    </thead>
+
+
+    <tbody>
+
+        {% for contact in contacts %} {% if contact.name != "None" %}
+        <tr>
+            <TD class="c3" align="center">
+                <input class="form-check-input" type="checkbox" name="contact" value="{{ contact.id }}" form="action_form" title="Select">
+            </TD>
+            <TD class="c3" align="left">{% for category in contact.category.all %}
+                <input class="form-check-input" type="checkbox" name="chosen_category{{ contact.id }}" value="{{ category }}" form="action_form" title="Select" style="width: 12px; height: 12px;" checked> {{ category }}
+                <br> {% endfor %}
+            </TD>
+            <TD class="c3" align="center">
+                {% if not contact.company.archivised %}
+                <a href="{% url 'bbidb:company_details' contact.company.id %}">
+                            {% if contact.company.company_logo %}
+                                <img src="{{ contact.company.company_logo.url }}" class="img-thumbnail"><br>
+                            {% endif %}
+                            {{ contact.company.name }}
+                        </a> {% else %}
+                <div class="alert alert-danger">Company Archivised</div>
+                {% endif %}
+            </TD>
+            <TD class="c3" align="center"><strong style="font-size: 22px">
+                    {% if contact.name %}
+                        <a href="{% url 'bbidb:contact_details' contact.id %}">{{ contact.name }}
+                        {% if contact.surname %}
+                            {{ contact.surname }}
+                        {% endif %}
+                    {% else %}
+                        &nbsp;Info-Only
+                    {% endif %}
+                    </a></strong><br> {% if contact.role %} {{ contact.role }} {% endif %}
+            </TD>
+            <TD class="c3" align="center">
+                {% if contact.phone %} Phone: {{ contact.phone }}<br> {% endif %} {% if contact.mobile %} Mobile: {{ contact.mobile }}<br> {% endif %} {% if contact.email %} Email: {{ contact.email }} {% endif %}
+            </TD>
+            <TD class="c3" align="center">
+                {% if contact.date_updated %} {{ contact.date_updated|date:"Y-m-d" }} - Updated<br> {% endif %} {{ contact.date_added|date:"Y-m-d" }} - Added<br><br> {{ contact.remarks|linebreaks }}
+            </TD>
+            <TD class="c3" align="center">
+                <a href="{% url 'bbidb:contact_update' contact.id %}">
+                        <button class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </button>
+                    </a></TD>
+
+            {% endif %}
+        </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+    <hr>
+{% endblock %}
+{% block js %}
+
+    <script>
+
+        $(document).ready(function () {
+            $('#contacts_table').DataTable({
+                    dom: 'B<"clear">lfrtip',
+                    buttons: {
+                        name: 'primary',
+                        buttons: ['copy', 'csv', 'excel', 'pdf']
+                    }
+                }
+            );
+
+            $('.dropdown-submenu a.test').on("click", function (e) {
+                    $(this).next('ul').toggle();
+                    e.stopPropagation();
+                    e.preventDefault();
+                }
+            );
+
+            $("input[name='action_no']").on('change', function () {
+                    $('#project_no').prop('style', this.value === 'add_to_project' ? 'padding-top: 10px;' : 'display: none;');
+                    $('#submit_button').prop('style', this.value !== '-1' ? 'padding-top: 10px;' : 'display: none;');
+                }
+            );
+
+        });
+
+
+    function toggle(source) {
+        checkboxes = document.getElementsByName('contact');
+        for (var i = 0, n = checkboxes.length; i < n; i++) {
+            checkboxes[i].checked = source.checked;
+        }
+    }
+    
+</script>
+
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>BBI DB - {{ project.name }} - Message Confirm</title>
+{% endblock %}
+
+{% block body %}
+
+    <h4><span class="glyphicon glyphicon-chevron-left"></span> <a
+            href="{% url 'bbidb:project_contacts' project.id %}">Go back
+        to {{ project.name }}</a>
+    </h4>
+
+    <h2>
+        Confirm you're ready to send the invites
+    </h2>
+
+    <hr>
+
+    <div class="container-fluid options_box" style="text-align: center">
+
+        <form id="message_confirm" action="{% url 'sending:sending_bulk_invite' project.id %}" method="POST">
+        {% csrf_token %}
+
+            <input type="hidden" name="project" value={{ project.id }}>
+            {% for project_contact in project_contact_list %}
+            <input type="hidden" name="project_contact" value={{ project_contact }}><br>
+            {% endfor %}
+
+        </form>
+
+        <input class="btn btn-primary btn-lg" form="message_confirm" type="submit" value="Yes, send all the invites">
+        <a href="{% url 'bbidb:project_contacts' project.id %}"><button class="btn btn-primary btn-lg" value="">No, take me back</button></a>
+
+    </div>
+
+    <div class="container-fluid options_box">
+        You are about to send
+    </div>
+
+
+{% endblock %}

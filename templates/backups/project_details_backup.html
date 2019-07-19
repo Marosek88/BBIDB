@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>BBI DB - Project Details</title>
+{% endblock %}
+
+{% block filters %}
+    Here go the filters
+{% endblock %}
+
+{% block rightside %}
+    <h3>Project details go here</h3>
+    <p>
+        Name: {{ project.name }} <br>
+        Status: {{ project.status }} <br>
+        Description: {{ project.description }} <br>
+        Tender Submission: {{ project.tender_submission }} <br>
+        Contract Start: {{ project.contract_start }} <br>
+    </p>
+    <h3>Contacts list</h3>
+    <p>
+        {% for project_contact in project_list %}
+            {{ project_contact.contact.category.name }} | {{ project_contact.contact.company.name }} |
+            {{ project_contact.contact.name }} | {{ project_contact.contact.surname }} |
+            {{ project_contact.contact.mobile }} | {{ project_contact.contact.email }} |
+            {{ project_contact.contact.remarks }} | {{ project_contact.email_sent }}
+            <br>
+        {% endfor %}
+    </p>
+
+
+
+    {#    {% for item in items %}#}
+    {#        <a href="{% url 'item' item_id=item.id %}">{{ item.name }}</a>#}
+    {#        <br>#}
+    {#    {% endfor %}#}
+{% endblock %}

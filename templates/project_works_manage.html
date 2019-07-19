@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>BBI DB - {{ project.name }} Works</title>
+{% endblock %}
+
+{% block body %}
+
+    <div class="container-fluid">
+
+    <h4><span class="glyphicon glyphicon-chevron-left"></span> <a
+            href="{% url 'bbidb:project_contacts' project.id %}">Go back
+        to {{ project.name }}</a>
+    </h4>
+
+    <h1><i class="fas fa-chalkboard-teacher"></i> BBI DB - {{ project.name }} Works </h1>
+
+    <p><a href="{% url 'bbidb:project_contact_works_create' project.id %}"><h3>Add Works</h3></a></p>
+    <hr>
+
+    <div class="container-fluid options_box">
+        <form action="{% url 'bbidb:project_works_action' project.id %}" method="post" id="action_form">
+            {% csrf_token %}
+
+            <label for="action_no">Select Action:&nbsp;</label><select name="action_no" id="action_no"
+                                                                       title="Select Action" required>
+            <option name="action" value="-1" hidden>Choose Action</option>
+            <option name="action" value="update">Update Fields</option>
+            <option name="action" value="archive">Remove to Archive</option>
+        </select>
+
+            <br><br>
+
+            <input type="submit" class="btn btn-primary btn-lg" value="Go">
+
+        </form>
+    </div>
+    <br>
+
+    <table id="project_works_table" class="display" border='2' align="center" style="width:100%">
+
+        <caption><i>BBIDB {{ project.name }} Works</i></caption>
+
+        <thead>
+        <tr>
+            <th><input type="checkbox" onClick="toggle(this)" title="Select All"></th>
+            <th>Name</th>
+            <th>Special Message</th>
+            <th>Attachment</th>
+        </tr>
+        </thead>
+
+
+        <tbody>
+
+        {% for project_work in project_works %}
+            {% if  project_work.name != "None" %}
+                <tr>
+                <TD class="c3" align="center">
+                    <input class="form-check-input" type="checkbox" name="work" value="{{ project_work.id }}"
+                           form="action_form" title="Select">
+                </TD>
+                <TD class="c3" align="center">{{ project_work.name }}</TD>
+                <TD class="c3" align="left">Works General Message:<br>
+                    <input type="text" name="works_message{{ project_work.id }}" size="50" value="{% if project_work.email_message %}{{ project_work.email_message }}{% endif %}" form="action_form" title="Works Package Message">
+                </TD>
+                <TD class="c3" align="left">
+                    Attachment message:<br>
+                    <input type="text" name="works_attachment_message{{ project_work.id }}" size="50" value="{% if project_work.email_attachment_message %}{{ project_work.email_attachment_message }}{% endif %}" form="action_form" title="Works Specific Attachment Message"><br>
+                    Attachment Link:<br>
+                    <input type="text" name="works_attachment{{ project_work.id }}" size="50" value="{% if project_work.email_category_attachment %}{{ project_work.email_category_attachment }}{% endif %}" form="action_form" title="Works Specific Attachment Link">
+                </TD>
+            {% endif %}
+        </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+    <hr>
+{% endblock %}
+{% block js %}
+    {#    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>#}
+    {#    <link rel="stylesheet" type="text/css"#}
+    {#          href="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.18/af-2.3.3/b-1.5.6/b-colvis-1.5.6/b-html5-1.5.6/b-print-1.5.6/cr-1.5.0/fh-3.1.4/kt-2.5.0/r-2.2.2/rg-1.1.0/sc-2.0.0/sl-1.3.0/datatables.min.css"/>#}
+    {##}
+    {#    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>#}
+    {#    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>#}
+    {#    <script type="text/javascript"#}
+    {#            src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.18/af-2.3.3/b-1.5.6/b-colvis-1.5.6/b-html5-1.5.6/b-print-1.5.6/cr-1.5.0/fh-3.1.4/kt-2.5.0/r-2.2.2/rg-1.1.0/sc-2.0.0/sl-1.3.0/datatables.min.js"></script>#}
+
+    <script>
+
+        $(document).ready(function () {
+            $('#project_works_table').DataTable({
+                    dom: 'B<"clear">lfrtip',
+                    buttons: {
+                        name: 'primary',
+                        buttons: ['copy', 'csv', 'excel', 'pdf']
+                    }
+                }
+            );
+        });
+
+        function toggle(source) {
+            checkboxes = document.getElementsByName('work');
+            for (var i = 0, n = checkboxes.length; i < n; i++) {
+                checkboxes[i].checked = source.checked;
+            }
+        }
+
+    </script>
+    </div>
+
+{% endblock %}

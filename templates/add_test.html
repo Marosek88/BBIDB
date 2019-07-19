@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>BBI DB - Test</title>
+{% endblock %}
+
+{% block body %}
+
+    <div class="container-fluid">
+
+        QueryDict: {{ test }} <br>
+        Type: {{ type }} <br>
+        Contact IDs: {{ contact }}<br>
+        Contact List len: {{ contact_len }}<br>
+        Project Id: {{ project }}<br>
+        Project Type: {{ project_type }}<br>
+        Project Instance: {{ project_instance }}
+
+
+    </div>
+
+
+{% endblock %}

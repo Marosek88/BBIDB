@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>BBI DB - Projects</title>
+{% endblock %}
+
+{% block body %}
+
+    <div class="container-fluid">
+
+        <h3>Projects list will go here</h3>
+    <p>
+        <a href="{% url 'bbidb:project_add' %}">Add Project</a>
+    </p>
+        <p>
+            {% for project in all_projects %}
+                <a href="{% url 'bbidb:project_details' project.id %}">{{ project.name }} | {{ project.status }}
+                    | {{ project.tender_submission }} | {{ project.contract_start }}</a>
+                <a href="{% url 'bbidb:project_update' project.id %}">Edit</a>
+                <form action="{% url 'bbidb:project_delete' project.id %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="project_id" value="{{ project.id }}"/>
+                    <button type="submit" class="btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-trash"></span>
+                    </button>
+                </form>
+                <br>
+            {% endfor %}
+        </p>
+
+    </div>
+
+{% endblock %}

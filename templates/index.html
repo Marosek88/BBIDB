@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>BBI DB - Home</title>
+{% endblock %}
+
+{% block body %}
+
+    <div class="container-fluid">
+
+        <h1>Hello, {{ user.first_name }}</h1>
+        <br>
+
+        <h2>There are currently {{ open_projects.count }} open Projects:</h2>
+        <br>
+
+        {% include 'index_projects.html' %}
+
+        <div class="container-fluid options_box">
+        <h3>Please select a user to see their information in tables below</h3>
+            <form action="{% url 'bbidb:index' %}" method="post" id="user_id">
+                {% csrf_token %}
+
+                <label for="user_id">Select Action:&nbsp;</label><select name="user_id" id="user_id"
+                                                                           title="Select Action" required>
+                <option name="user" value="-1" hidden>Choose User</option>
+                {% for user in active_users %}
+                <option name="user" value="{{ user.id }}">{{ user.first_name }} {{ user.last_name }}</option>
+                {% endfor %}
+            </select>
+
+                <br><br>
+
+                <input type="submit" class="btn btn-primary btn-lg" value="Go">
+
+            </form>
+        </div>
+
+        <h2>There are {{ my_project_contacts_to_send.count }} invitations for {% if the_user %}{{ the_user.first_name }} {{ the_user.last_name }}{% else %}you{% endif %} to send:</h2>
+        <br>
+
+        {% include 'index_outstanding_invites.html' %}
+
+        <h2>There are {{ my_project_contacts_clarification.count }} clarifications for {% if the_user %}{{ the_user.first_name }} {{ the_user.last_name }}{% else %}you{% endif %} to send:</h2>
+        <br>
+
+        {% include 'index_outstanding_clarifications.html' %}
+
+    </div>
+
+{% endblock %}

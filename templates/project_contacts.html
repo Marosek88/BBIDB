@@ -1,0 +1,400 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>BBI DB - {{ project.name }} - Project Details</title>
+{% endblock %}
+
+{% block body %}
+
+    <div style="padding-left: 20px;">
+        <h4><span class="glyphicon glyphicon-chevron-left"></span> <a href="{% url 'bbidb:projects' %}">Go back to
+            Projects</a>
+        </h4>
+
+        <h1><i class="fas fa-chalkboard-teacher"></i> BBIDB - {{ project.name }} - Project Contacts List </h1>
+    </div>
+    <hr>
+    <div style="padding-left: 20px;">
+        <button type="button" class="btn btn-primary btn-lg" data-toggle="collapse" data-target="#project_details">
+            Project
+            Details
+        </button>
+
+        <div class="collapse" id="project_details">
+            <div style="padding-top:15px; padding-bottom: 15px;" ?>
+                <button class="btn btn-primary"
+                        onclick='window.location.href="{% url 'bbidb:project_update' project.id %}"'>
+                    Edit
+                </button>
+            </div>
+            <table class="display" border='2' align="center" style="width:100%;">
+                {# ------------------- FIRST ROW ------------------- #}
+                <tr>
+                    <td class="bbidb_details-label">Name:</td>
+                    <td class="bbidb_details-info">{{ project.name }}</td>
+
+
+                    <td class="bbidb_details-label">Outstanding Invites:</td>
+                    <td class="bbidb_details-info">Total: {{ outstanding_invites.count }},
+                        Yours:{{ my_outstanding_invites.count }}</td>
+                </tr>
+                {# ------------------- SECOND ROW ------------------- #}
+                <tr>
+                    <td class="bbidb_details-label">Status:</td>
+                    <td class="bbidb_details-info">
+                        {% if project.status %}
+                            Open
+                        {% else %}
+                            Close
+                        {% endif %}
+                    </td>
+
+                    <td class="bbidb_details-label">Outstanding Clarifications:</td>
+                    <td class="bbidb_details-info">Total: {{ outstanding_clarifications.count }},
+                        Yours: {{ my_outstanding_clarifications.count }}</td>
+                </tr>
+                {# ------------------- THIRD ROW ------------------- #}
+                <tr>
+                    <td>Date Added:</td>
+                    <td>{{ project.date_added }}</td>
+
+                    <td>Quotation Deadline:</td>
+                    <td>
+                        {% if project.email_quotation_deadline %}
+                            {{ project.email_quotation_deadline }}
+                        {% else %}
+                            Not added
+                        {% endif %}
+                    </td>
+                </tr>
+                {# ------------------- FOURTH ROW ------------------- #}
+                <tr>
+                    <td>Date Updated:</td>
+                    <td>
+                        {% if project.date_updated %}
+                            {{ project.date_updated }}
+                        {% else %}
+                            Never updated
+                        {% endif %}
+                    </td>
+
+                    <td>Tender Submission:</td>
+                    <td>
+                        {% if project.tender_submission %}
+                            {{ project.tender_submission }}
+                        {% else %}
+                            Not added
+                        {% endif %}
+                    </td>
+                </tr>
+                {# ------------------- FIFTH ROW - DESCRIPTION ------------------- #}
+                <tr>
+
+                    <td class="bbidb_details-label">Description:</td>
+                    <td class="bbidb_details-remarks" colspan="3">
+                        {% if project.description %}
+                            {{ project.description|linebreaks }}
+                        {% else %}
+                            No description
+                        {% endif %}
+                    </td>
+                </tr>
+                {# ------------------- SIXTH ROW - REMARKS ------------------- #}
+                <tr>
+                    <td class="bbidb_details-label">Remarks:</td>
+                    <td class="bbidb_details-remarks" colspan="3">
+                        {% if project.remarks %}
+                            {{ project.remarks|linebreaks }}
+                        {% else %}
+                            No remarks
+                        {% endif %}
+                    </td>
+                </tr>
+                <!--{# ------------------- SEVENTH ROW - REMARKS ------------------- #}-->
+                <!--<tr>-->
+                <!--    <td class="bbidb_details-label">Stats:</td>-->
+                <!--    <td style="height: 200px; vertical-align: bottom" colspan="3">-->
+                <!--        <div style="height:100%; width: 50px; background-color: #888888;">-->
+                <!--            <div style="width: 50px; height: {{ emails_sent }}%; background-color: #3C763D; padding-left: 20px;"></div>-->
+                <!--        </div>-->
+                <!--        <div style="width: 50px; height: {{ emails_to_send }}%; background-color: #3C763D; padding-left: 20px;"></div>-->
+                <!--    </td>-->
+                <!--</tr>-->
+            </table>
+        </div>
+    </div>
+
+    <div style="padding: 20px;">
+        <button onclick='window.location.href="{% url 'bbidb:project_works_manage' project.id %}"'
+                class="btn btn-primary btn-lg">Manage Project Works
+        </button>
+    </div>
+
+    <div class="container-fluid options_box">
+        <form action="{% url 'bbidb:project_contact_action' %}" method="post" id="action_form">
+            {% csrf_token %}
+
+            <input type="hidden" name="project_id" value="{{ project.id }}">
+
+
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <label class="btn btn-primary active">
+                    <input type="radio" name="action_no" value="-1" autocomplete="off"> Off
+                </label>
+                <label class="btn btn-primary">
+                    <input type="radio" name="action_no" value="add_to_works" autocomplete="off"> Add To Works
+                </label>
+                <label class="btn btn-primary">
+                    <input type="radio" name="action_no" value="assign_user" autocomplete="off"> Assign User
+                </label>
+                <label class="btn btn-primary">
+                    <input type="radio" name="action_no" value="change_status" autocomplete="off"> Change Status
+                </label>
+                <label class="btn btn-primary">
+                    <input type="radio" name="action_no" value="send_bulk_invites" autocomplete="off"> Send Invites
+                </label>
+                <label class="btn btn-primary">
+                    <input type="radio" name="action_no" value="archive" autocomplete="off"> Remove To Archive
+                </label>
+            </div>
+
+            <div id="works_no" style="display: none;">
+                <select name="works_no" title="Select Works">
+                    <option value="-1" hidden>Choose Works Package</option>
+                    {% for work in works %}
+                        <option name="works" value="{{ work.id }}">{{ work.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div id="user_id" style="display: none;">
+                <select name="user_id" title="Select User">
+                    <option value="-1" hidden>Choose User</option>
+                    {% for user in users %}
+                        <option name="user" value="{{ user.id }}">{{ user.first_name }} {{ user.last_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div id="change_status" style="display: none;">
+                {# EDIT STATUS MENUS \/\/\/#}
+                <select name="invite_sent" title="Invite">
+                    <option value="-1" hidden>Invite Sent?</option>
+                    <option value="yes">Yes</option>
+                    <option value="">No</option>
+                </select>
+
+                <select name="clarification_req" title="Clarification">
+                    <option value="-1" hidden>Clarification required?</option>
+                    <option value="yes">Yes</option>
+                    <option value="">No</option>
+                </select>
+
+                <select name="pricing" title="Not Pricing">
+                    <option value="-1" hidden>Pricing?</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                    <option value="not confirmed">Not confirmed</option>
+                </select>
+
+                <select name="quotation_received" title="Quotation Received">
+                    <option value="-1" hidden>Quotation Received?</option>
+                    <option value="yes">Yes</option>
+                    <option value="">No</option>
+                </select>
+            </div>
+
+            <div id="submit_button" style="display: none;">
+                <input type="submit" id="submit_button" class="btn btn-primary btn-lg" value="Go">
+            </div>
+
+            {# EDIT STATUS MENUS /\/\/\#}
+
+        </form>
+    </div>
+    <br>
+
+    <table id="project_contacts_table" class="display" border='2' align="center" style="width:100%">
+
+        <caption><i>BBIDB - {{ project.name }} - Project Contacts List</i></caption>
+
+        <thead>
+        <tr>
+            <th><input type="checkbox" onClick="toggle(this)" title="Select All"></th>
+            <th>Works</th>
+            <th>Contact
+            <th>Assigned</th>
+            <th>Status</th>
+            <th>Remarks</th>
+            <th>Options</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        {% for project_contact in project_contacts %}
+            {% if  project_contact.name != "None" %}
+                <tr>
+                <TD class="c3" align="center">
+                    <input class="form-check-input" type="checkbox" name="project_contact"
+                           value="{{ project_contact.id }}"
+                           form="action_form" title="Select">
+                </TD>
+                <TD class="c3" align="center">
+                    {% if project_contact.works and project_contact.works.archivised == False %}
+                        <b>{{ project_contact.works.name }}</b>
+                    {% elif project_contact.works and project_contact.works.archivised == True %}
+                        <div class="alert alert-warning">Works Archivised</div>
+                    {% else %}
+                        <div class="alert alert-warning">No Works Assigned</div>
+                    {% endif %}
+                </TD>
+                <TD class="c3"
+                    {% if project_contact.contact.archivised or project_contact.contact.company.archivised %}style="background-color: #F2DEDE;"{% endif %}
+                    align="center">
+                    <strong style="font-size: 22px"><a
+                            href="{% url 'bbidb:contact_details' project_contact.contact.id %}">
+                        {% if project_contact.contact.name %}
+                            {{ project_contact.contact.name }}{% if project_contact.contact.surname %}
+                                {{ project_contact.contact.surname }}{% endif %}
+                        {% else %}
+                            Info-Only
+                        {% endif %}
+                    </a></strong><br>
+                    {% if project_contact.contact.archivised %}
+                        <span class="alert-danger">Contact Archivised</span><br>
+                    {% endif %}
+                    <a href="{% url 'bbidb:company_details' project_contact.contact.company.id %}">
+                        {% if project_contact.contact.company.company_logo %}
+                            <img src="{{ project_contact.contact.company.company_logo.url }}" class="img-thumbnail"><br>
+                        {% else %}
+                            {{ project_contact.contact.company.name }}<br>
+                        {% endif %}
+                    </a>
+                    {% if project_contact.contact.company.archivised %}
+                        <span class="alert-danger">Company Archivised</span><br>
+                    {% endif %}
+                    {% if project_contact.contact.phone %}
+                        Land: {{ project_contact.contact.phone }}<br>
+                    {% endif %}
+                    {% if project_contact.contact.mobile %}
+                        Mobile: {{ project_contact.contact.mobile }}<br>
+                    {% endif %}
+                    {% if project_contact.contact.email %}
+                        Email: {{ project_contact.contact.email }}<br>
+                    {% endif %}
+                    {% if project_contact.contact.company.website %}
+                        Website:
+                        <a href="{{ project_contact.contact.company.website }}"> {{ project_contact.contact.company.website }}</a>
+                    {% endif %}
+                </TD>
+                <TD class="c3" align="center">
+                    {% if project_contact.assigned_to %}
+                        {{ project_contact.assigned_to.first_name }} {{ project_contact.assigned_to.last_name }}
+                    {% else %}
+                        <span class="alert alert-warning">Not Assigned</span>
+                    {% endif %}
+                </TD>
+                <TD class="c3" align="left">
+                    <table class="">
+                        <tr>
+                            {% if project_contact.email_sent_date %}
+                                <td class="alert alert-success">Invite sent:</td>
+                                <td class="alert alert-success">Yes - {{ project_contact.email_sent_date }} (SNT)</td>
+                            {% else %}
+                                <td class="alert alert-warning">Invite sent:</td>
+                                <td class="alert alert-warning">No (NST)</td>
+                            {% endif %}
+                        </tr>
+                        <tr>
+                            {% if project_contact.requires_clarification_date %}
+                                <td class="alert alert-warning">Clarification Required:</td>
+                                <td class="alert alert-warning">Yes - {{ project_contact.requires_clarification_date }}
+                                    (CRQ)
+                                </td>
+                            {% else %}
+                                <td class="alert alert-success">Clarification Required:</td>
+                                <td class="alert alert-success">No (NCR)</td>
+                            {% endif %}
+                        </tr>
+                        <tr>
+                            {% if project_contact.not_interested_date %}
+                                <td class="alert alert-danger">Pricing?</td>
+                                <td class="alert alert-danger">No - {{ project_contact.not_interested_date }} (NTP)</td>
+                            {% elif project_contact.will_price_date %}
+                                <td class="alert alert-success">Pricing?</td>
+                                <td class="alert alert-success">Yes - {{ project_contact.will_price_date }} (WPR)</td>
+                            {% else %}
+                                <td class="alert alert-warning">Pricing?</td>
+                                <td class="alert alert-warning">Not Confirmed (PNC)</td>
+                            {% endif %}
+                        </tr>
+                        <tr>
+                            {% if project_contact.quotation_received == None %}
+                                <td class="alert alert-warning">Quotation Received:</td>
+                                <td class="alert alert-warning">No (NQR)</td>
+                            {% else %}
+                                <td class="alert alert-success">Quotation Received:</td>
+                                <td class="alert alert-success">{{ project_contact.quotation_received }} (QRC)</td>
+                            {% endif %}
+                        </tr>
+                    </table>
+                </TD>
+                <TD class="c3" align="center">
+                    {% if project_contact.remarks %}{{ project_contact.remarks }}{% endif %}</TD>
+                <TD class="c3" align="center">
+                    <a href="{% url 'bbidb:project_contact_update' project_contact.id %}">
+                        <button class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </button>
+                    </a>
+                    <br>
+                    <br>
+                    <a href="{% url 'bbidb:project_contact_message_manage' project_contact.id %}">
+                        <button class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-envelope"></span>
+                        </button>
+                    </a></TD>
+
+            {% endif %}
+        </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+    <hr>
+{% endblock %}
+{% block js %}
+
+    <script>
+
+        $(document).ready(function () {
+            $('#project_contacts_table').DataTable({
+                    dom: 'B<"clear">lfrtip',
+                    buttons: {
+                        name: 'primary',
+                        buttons: ['copy', 'csv', 'excel', 'pdf']
+                    }
+                }
+            );
+
+            $("input[name='action_no']").on('change', function () {
+                    $('#works_no').prop('style', this.value === 'add_to_works' ? 'padding-top: 10px;' : 'display: none;');
+                    $('#user_id').prop('style', this.value === 'assign_user' ? 'padding-top: 10px;' : 'display: none;');
+                    $('#change_status').prop('style', this.value === 'change_status' ? 'padding-top: 10px;' : 'display: none;');
+                    $('#submit_button').prop('style', this.value !== '-1' ? 'padding-top: 10px;' : 'display: none;');
+                }
+            );
+
+        });
+
+        function toggle(source) {
+            checkboxes = document.getElementsByName('project_contact');
+            for (var i = 0, n = checkboxes.length; i < n; i++) {
+                checkboxes[i].checked = source.checked;
+            }
+        }
+
+    </script>
+
+{% endblock %}

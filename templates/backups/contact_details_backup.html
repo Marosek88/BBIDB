@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>BBI DB - Contact Details</title>
+{% endblock %}
+
+{% block filters %}
+    Here go the filters
+{% endblock %}
+
+{% block rightside %}
+    <h3>Contact details go here</h3>
+    <p>
+    Company: {{ contact.company.name }} <br>
+    Name: {{ contact.name }} <br>
+    Surname: {{ contact.surname }} <br>
+    Mobile: {{ contact.mobile }} <br>
+    Email: {{ contact.email }}
+    </p>
+
+
+
+    {#    {% for item in items %}#}
+    {#        <a href="{% url 'item' item_id=item.id %}">{{ item.name }}</a>#}
+    {#        <br>#}
+    {#    {% endfor %}#}
+{% endblock %}

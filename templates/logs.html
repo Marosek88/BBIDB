@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>BBI DB - Change Log</title>
+{% endblock %}
+
+{% block body %}
+
+    <h1><i class="fas fa-chalkboard-teacher"></i> BBIDB Change Log </h1>
+    <hr>
+
+    <table id="change_logs" class="display" border='2' align="center" style="width:100%">
+
+        <caption><i>BBIDB Companies</i></caption>
+
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Category</th>
+            <th>User</th>
+            <th>Change</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        {% for log in logs %}
+            {% if  log.category != "None" %}
+                <tr>
+
+                <TD class="c3" align="center">
+                    {{ log.log_date|date:"Y-m-d" }} {{ log.log_date|time:"H:i:s" }}
+                </TD>
+                <TD class="c3" align="center">
+                    {{ log.category }}
+                </TD>
+                <TD class="c3" align="center">
+                    {{ log.user.first_name }} {{ log.user.last_name }}
+                </TD>
+                <TD class="c3" align="center">
+                    {{ log.log|linebreaks }}
+                </TD>
+
+            {% endif %}
+        </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+    <hr>
+
+{% endblock %}
+{% block js %}
+
+    <script>
+
+        $(document).ready(function () {
+            $('#change_logs').DataTable({
+                    dom: 'B<"clear">lfrtip',
+                    buttons: {
+                        name: 'primary',
+                        buttons: ['copy', 'csv', 'excel', 'pdf']
+                    }
+                }
+            );
+
+        });
+
+    </script>
+
+{% endblock %}

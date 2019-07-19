@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>BBI DB - Home</title>
+{% endblock %}
+
+{% block body %}
+
+    <h2>It seems the page you're looking for doesn't exist.</h2>
+
+    <br>
+
+    <h3><a href="{% url 'bbidb:index' %}">Go Back to Home</a></h3>
+
+{% endblock %}

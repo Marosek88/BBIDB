@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>BBI DB - Contacts</title>
+{% endblock %}
+
+{% block filters %}
+    Here go the filters
+{% endblock %}
+
+{% block rightside %}
+    <h3>Table goes here</h3>
+
+    {% if error_message %}
+        <p>{{ error_message }}</p>
+    {% endif %}
+
+    <form action="{% url 'bbidb:add_to_project' project.id %}" method="POST">
+        {% csrf_token %}
+        {% for contact in contacts %}
+            <input type="radio" id="contact{{ forloop.counter }}" name="contact" value="{{ contact.id }}" />
+            <a href="{% url 'bbidb:contact_details' contact.id %}">
+            <label for="contact{{ forloop.counter }}">
+                {{ contact.category.name }} | {{ contact.company.name }}
+            | {{ contact.name }} | {{ contact.surname }} |
+            {{ contact.date_used }}
+            </label></a><br>
+        {% endfor %}
+        <input type="submit" value="To Project">
+    </form>
+
+    {% for contact in contacts %}
+        <a href="{% url 'bbidb:contact_details' contact.id %}">{{ contact.category.name }} | {{ contact.company.name }}
+            | {{ contact.name }} | {{ contact.surname }} |
+            {{ contact.date_used }}</a>
+        <br>
+    {% endfor %}
+
+    {% comment %}<p><a href="{% url 'bbidb:add_to_project' project.id %}">Add to project</a></p>{% endcomment %}
+
+    <p>All contacts count: {{ contacts.count }} </p>
+    <p>
+        {% for company in companies %}
+            Count of contacts with {{ company }}: {{ company.contact_set.count }}
+            <br>
+        {% endfor %}
+    </p>
+    <p>
+        {% for category in categories %}
+            Count of contacts for {{ category }}: {{ category.contact_set.count }}
+            <br>
+        {% endfor %}
+    </p>
+
+
+    {#    {% for item in items %}#}
+    {#        <a href="{% url 'item' item_id=item.id %}">{{ item.name }}</a>#}
+    {#        <br>#}
+    {#    {% endfor %}#}
+{% endblock %}

@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>BBI DB - Companies</title>
+{% endblock %}
+
+{% block body %}
+
+    <div style="padding-left: 20px;">
+    <h1><i class="fas fa-chalkboard-teacher"></i> BBIDB Companies List </h1>
+    <button onclick='window.location.href="{% url 'bbidb:company_add' %}"' class="btn btn-primary">Add Company</button>
+    <button onclick='window.location.href="{% url 'bbidb:import_multiple' %}"' class="btn btn-primary">Import Many
+    </button>
+    </div>
+    <hr>
+
+    <div class="container-fluid options_box">
+        <form action="{% url 'bbidb:company_action' %}" method="post" id="action_form">
+            {% csrf_token %}
+
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <label class="btn btn-primary active">
+                    <input type="radio" name="action_no" value="-1" autocomplete="off"> Off
+                </label>
+                <label class="btn btn-primary">
+                    <input type="radio" name="action_no" value="archive" autocomplete="off"> Remove To Archive
+                </label>
+            </div>
+
+            <div id="submit_button" style="display: none;">
+                <input type="submit" id="submit_button" class="btn btn-primary btn-lg" value="Go">
+            </div>
+
+        </form>
+    </div>
+    <br>
+
+    <table id="companies_table" class="display" border='2' align="center" style="width:100%">
+
+        <caption><i>BBIDB Companies</i></caption>
+
+        <thead>
+        <tr>
+            <th><input type="checkbox" onClick="toggle(this)" title="Select All"></th>
+            <th>Company</th>
+            <th>Categories</th>
+            <th>Contact</th>
+            <th>Remarks</th>
+            <th>Edit</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        {% for company in companies %}
+            {% if  company.name != "None" %}
+                <tr>
+                <TD class="c3" align="center">
+                    <input class="form-check-input" type="checkbox" name="company" value="{{ company.id }}"
+                           form="action_form" title="Select">
+                </TD>
+                <TD class="c3" align="center">
+                    <a href="{% url 'bbidb:company_details' company.id %}">{{ company.name }}</a><br>
+                    {% if company.company_logo %}
+                        <a href="{% url 'bbidb:company_details' company.id %}"><img src="{{ company.company_logo.url }}"
+                                                                                    class="img-thumbnail"></a>
+                    {% endif %}
+                </TD>
+                <TD class="c3" align="center">
+                    {% for contact in company.contact_set.all %}
+                        {% if contact.archivised != True %}
+                            {% for category in contact.category.all %}
+                                {{ category }}<br>
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                </TD>
+                <TD class="c3" align="center">
+                    {% if company.head_phone %}
+                        Phone: {{ company.head_phone }}<br>
+                    {% endif %}
+                    {% if company.head_email %}
+                        Email: {{ company.head_email }}<br>
+                    {% endif %}
+                    {% if company.website %}
+                        Website: <a href="{{ company.website }}" target="_blank">{{ company.website }}</a><br>
+                    {% endif %}
+                    {% if company.head_address %}
+                        Address: {{ company.head_address }}
+                    {% endif %}
+                </TD>
+                <TD class="c3" align="center">
+                    {% if company.date_updated %}
+                        {{ company.date_updated|date:"Y-m-d" }} - Updated<br>
+                    {% endif %}
+                    {{ company.date_added|date:"Y-m-d" }} - Added<br><br>
+                    {{ company.remarks|linebreaks }}</TD>
+                <TD class="c3" align="center">
+                    <a href="{% url 'bbidb:company_update' company.id %}">
+                        <button type="" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </button>
+                    </a></TD>
+
+            {% endif %}
+        </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+    <hr>
+
+{% endblock %}
+{% block js %}
+    {#    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>#}
+
+
+    <script>
+
+        $(document).ready(function () {
+            $('#companies_table').DataTable({
+                    dom: 'B<"clear">lfrtip',
+                    buttons: {
+                        name: 'primary',
+                        buttons: ['copy', 'csv', 'excel', 'pdf']
+                    }
+                }
+            );
+
+            $("input[name='action_no']").on('change', function () {
+                    $('#submit_button').prop('style', this.value !== '-1' ? 'padding-top: 10px;' : 'display: none;');
+                }
+            );
+
+        });
+
+        function toggle(source) {
+            checkboxes = document.getElementsByName('company');
+            for (var i = 0, n = checkboxes.length; i < n; i++) {
+                checkboxes[i].checked = source.checked;
+            }
+        }
+
+    </script>
+
+{% endblock %}

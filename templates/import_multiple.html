@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>BBI DB - Home</title>
+{% endblock %}
+
+{% block body %}
+
+    <h1>Import Multiple Companies/Contacts</h1>
+    <br>
+
+    <div class="container-fluid options_box">
+        <form action="{% url 'bbidb:import_action' %}" method="post" id="import" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <input type="hidden" name="project_id" value="{{ project.id }}">
+
+            <label for="action_no">Select What to Import:&nbsp;</label><select name="action_no" id="action_no" required>
+            <option value="-1" hidden>Choose</option>
+            {% if request.user.is_superuser %}<option value="categories">Import Categories</option>{% endif %}
+            <option value="companies">Import Companies</option>
+            <option value="contacts">Import Contacts</option>
+        </select>
+
+            <br><br>
+
+            <textarea name="companies_instruction" id="companies_instruction" cols="120" rows="7"
+                      title="Companies CSV file example" hidden>
+Important: DO NOT USE ANY COMMAS - CSV is a Comma Separated Values file where comma is used to distinguish between different fields. Use CTRL-H to replace commas with semi-colons.
+
+Please follow the format in imported CSV file (note - first line will not be imported as it will be treated as a header):
+
+company name, head office address, head office phone, head office email, website (inlude http(s)://), remarks
+---
+Note: keep company names unique (no duplicates) and keep http:// or https:// with website addresses.
+            </textarea>
+
+                        <textarea name="contacts_instruction" id="contacts_instruction" cols="120" rows="7"
+                      title="Contacts CSV file example" hidden>
+Important: DO NOT USE ANY COMMAS - CSV is a Comma Separated Values file where comma is used to distinguish between different fields. Use CTRL-H to replace commas with semi-colons.
+
+Please follow the format in imported CSV file (note - first line will not be imported as it will be treated as a header):
+
+company, category, name, surname, role, address, phone, mobile, email, remarks
+---
+Note: company and category must be exactly the same as in DB or left empty. Add address if different from head office.
+            </textarea>
+
+                                    <textarea name="categories_instruction" id="categories_instruction" cols="120" rows="7"
+                      title="Contacts CSV file example" hidden>
+Important: DO NOT USE ANY COMMAS - CSV is a Comma Separated Values file where comma is used to distinguish between different fields. Use CTRL-H to replace commas with semi-colons.
+
+Please follow the format in imported CSV file (note - first line will not be imported as it will be treated as a header):
+
+category name
+---
+Note: Category names have to be unique
+            </textarea>
+            <div class="bbidb_button">
+            <input type="file" name="file" id="file">
+            </div>
+            <div class="bbidb_button">
+                <input type="submit" class="btn btn-primary btn-lg" value="Go">
+            </div>
+
+        </form>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+
+    <script>
+
+        $(document).ready(function () {
+
+            $("#action_no").on('change', function () {
+                    $('#companies_instruction').prop('hidden', this.value === 'companies' ? false : true);
+                    $('#contacts_instruction').prop('hidden', this.value === 'contacts' ? false : true);
+                    $('#categories_instruction').prop('hidden', this.value === 'categories' ? false : true);
+                }
+            );
+
+        });
+
+    </script>
+
+{% endblock %}

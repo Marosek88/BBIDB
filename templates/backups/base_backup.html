@@ -1,0 +1,107 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Satisfy' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <meta charset="UTF-8">
+    {% block head %}
+    {% endblock %}
+</head>
+<body>
+
+<div class="header">
+
+    <nav class="navbar navbar-inverse">
+        <!-- Header -->
+        <div class=navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#topnavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{% url 'bbidb:index' %}">BBI DB</a>
+        </div>
+
+        <!-- Items -->
+        <div class="colapse navbar-collapse">
+            <!-- Main Menu -->
+            <ul class="nav navbar-nav">
+                <li class="">
+                    <a href="{% url 'bbidb:index' %}">
+                        <span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span>&nbsp; Companies
+                    </a>
+                </li>
+                <li class="">
+                    <a href="{% url 'bbidb:contacts' %}">
+                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp; Contacts
+                    </a>
+                </li>
+                <li class="">
+                    <a href="{% url 'bbidb:projects' %}">
+                        <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>&nbsp; Projects
+                    </a>
+                </li>
+            </ul>
+
+            <form class="navbar-form navbar-left" role="search" method="get" action="#">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="q" value="">
+                </div>
+                <button type="submit" class="btn btn-default">Search</button>
+            </form>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li class="">
+                    <a href="{% url 'bbidb:index' %}">
+                        <span class="glyphicon glyphicon-off" aria-hidden="true"></span>&nbsp; Logout
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+    </nav>
+
+    <a href="{% url 'bbidb:index' %}"><h1>BBI Enquiries Database</h1></a>
+    <h2>
+        {% block tab %}
+        {% endblock %}
+    </h2>
+    <p><a href="#">Companies</a> <a href="{% url 'bbidb:contacts' %}">Contacts</a> <a href="{% url 'bbidb:projects' %}">Projects</a>
+    </p>
+</div>
+
+<div class="clearfix">
+    <div class="column menu">
+        <h3>Filters</h3>
+        {% block filters %}
+        {% endblock %}
+        <br>
+        <ul>
+            <li>List</li>
+            <li>Add</li>
+            <li>Manage</li>
+        </ul>
+    </div>
+
+    <div class="column content">
+        {% block rightside %}
+        {% endblock %}
+    </div>
+</div>
+
+<div class="footer">
+    {% block footer %}
+    {% endblock %}
+</div>
+
+</body>
+</html>

@@ -1,0 +1,100 @@
+body {
+    background: white;
+}
+
+input[type='checkbox'] {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 5px;
+    border: 2px solid #555;
+}
+
+input[type='checkbox']:checked {
+    background: darkblue;
+}
+
+#go {
+    width: 20em;
+    height: 2em;
+}
+
+.navbar {
+    border-radius: 0;
+}
+
+.navbar-inverse .navbar-brand {
+    /*font-family: Satisfy, cursive;*/
+    /*font-family: 'Anton', sans-serif;*/
+    /*font-family: 'Fascinate Inline', cursive;*/
+    font-family: 'Fredoka One', cursive;
+    /*font-family: 'Ultra', serif;*/
+    /*font-family: 'Monoton', cursive;*/
+    font-size: 150%;
+}
+
+.img-thumbnail {
+    max-height: 50px;
+}
+
+.input-text-40 {
+    width: 40%;
+}
+
+.dropdown-submenu {
+    position: relative;
+}
+
+.dropdown-submenu .dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top: -1px;
+}
+
+.options_box {
+    border: 1px solid #ccc !important;
+    padding: 16px;
+    border-radius: 16px;
+}
+
+.bbidb_details {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 90%;
+}
+
+.bbidb_details td, .bbidb_details th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.bbidb_details tr:hover {
+    background-color: #ddd;
+}
+
+.bbidb_details-label {
+    width: 15%;
+}
+
+.bbidb_details-info {
+    width: 35%;
+}
+
+.bbidb_details-remarks {
+    height: 100px;
+}
+
+.bbidb_button {
+    padding: 10px;
+}
+
+.bbidb_warning {
+    color: #8A6D3B !important;
+    background-color: #FCF8E3 !important;
+}
+
+.bbidb_success {
+    color: #3C763D !important;
+    background-color: #DFF0D8 !important;
+}

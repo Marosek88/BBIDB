@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>BBI DB - Companies</title>
+{% endblock %}
+
+{% block body %}
+
+    <div class="container-fluid">
+
+        <h3>Companies Database</h3>
+
+        {% if error_message %}
+            <p>{{ error_message }}</p>
+        {% endif %}
+
+        <p>
+            <a href="{% url 'bbidb:company_add' %}">Add Company</a>
+        </p>
+
+        {% for company in all_companies %}
+            <a href="{% url 'bbidb:company_details' company.id %}">{{ company.name }}</a>
+            <a href="{% url 'bbidb:company_update' company.id %}">Edit</a>
+            <!-- Delete -->
+            <form action="{% url 'bbidb:company_delete' company.id %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="company_id" value="{{ company.id }}"/>
+                <button type="submit" class="btn btn-default btn-sm">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </button>
+            </form>
+            <br>
+        {% endfor %}
+
+        {% comment %}<p><a href="{% url 'bbidb:add_to_project' project.id %}">Add to project</a></p>{% endcomment %}
+
+        <p>All contacts count: {{ all_companies.count }} </p>
+        <p>
+            {% for company in all_companies %}
+                Count of contacts with {{ company }}: {{ company.contact_set.count }}
+                <br>
+            {% endfor %}
+        </p>
+        <p>
+            {% for category in categories %}
+                Count of contacts for {{ category }}: {{ category.contact_set.count }}
+                <br>
+            {% endfor %}
+        </p>
+    </div>
+
+{% endblock %}

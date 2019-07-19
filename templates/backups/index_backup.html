@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>BBI DB - Home</title>
+{% endblock %}
+
+{% block filters %}
+    Here go the filters
+{% endblock %}
+
+{% block rightside %}
+    <h3>Home page goes here</h3>
+    <p>Maybe use it for stats?</p>
+
+    <p>All contacts count: {{  contacts.count }} </p>
+    <p>
+    {% for company in companies %}
+        Count of contacts with {{ company }}: {{  company.contact_set.count }}
+        <br>
+    {% endfor %}
+    </p>
+    <p>
+    {% for category in categories %}
+        Count of contacts for {{ category }}: {{ category.contact_set.count }}
+        <br>
+    {% endfor %}
+    </p>
+
+
+    {#    {% for item in items %}#}
+    {#        <a href="{% url 'item' item_id=item.id %}">{{ item.name }}</a>#}
+    {#        <br>#}
+    {#    {% endfor %}#}
+{% endblock %}

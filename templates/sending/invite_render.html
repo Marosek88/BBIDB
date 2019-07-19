@@ -1,0 +1,70 @@
+<div style="font-family: Arial; font-size: 12px">
+    EmailToSendInvite: {{ project_contact.contact.email }}<br>
+    <br>
+    {% if project.email_greeting %}{{ project.email_greeting }}{% endif %}{% if project_contact.contact.name %} {{ project_contact.contact.name }}{% endif %},<br>
+    <br>
+
+    {% if project_contact.email_personal_message %}
+        {{ project_contact.email_personal_message|linebreaks }}<br>
+        <br>
+    {% endif %}
+
+    {% if project.email_invitation1 %}
+        {{ project.email_invitation1 }} <b>{{ project.name }}</b> {{ project.email_invitation2 }}
+        <b>{{ works.name }}</b><br>
+        <br>
+    {% endif %}
+
+    {% if project.description %}
+        <b>{{ project.email_description1 }}</b><br>
+        {{ project.description|linebreaks }}
+        <br>
+    {% endif %}
+
+    {% if works.email_message %}
+        {{ works.email_message|linebreaks }}
+        <br>
+    {% endif %}
+
+    {% if works.email_category_attachment %}
+        <b>{{ works.email_attachment_message }}</b><br>
+        <a href="{{ works.email_category_attachment }}"
+           target="_blank">{{ works.email_category_attachment }}</a><br>
+        <br>
+    {% endif %}
+
+    {% if project.email_attachment_full %}
+        <b>{{ project.email_attachment2 }}</b><br>
+        <a href="{{ project.email_attachment_full }}" target="_blank">{{ project.email_attachment_full }}<br></a>
+        <br>
+    {% endif %}
+
+    {% if project.email_note1 %}
+        <b>{{ project.email_note1 }}</b><br>
+    {% endif %}
+    {% if project.email_note2 %}
+        {{ project.email_note2 }} <b>{{ project.email_quotation_deadline }}</b><br>
+    {% endif %}
+    {% if project.email_note3 %}
+        <b>{{ project.email_note3 }}</b><br>
+    {% endif %}
+    {% if project.email_general_notes %}
+    {{ project.email_general_notes|linebreaks }}
+    {% endif %}
+    <br>
+
+    If you have any questions please do not hesitate to contact me by replying to this message.<br>
+    <br>
+    Kind regards,<br>
+    <br>
+    {% if user.email == 'marek.kubiak@balfourbeatty.com' %}
+        <b style="color: #338FD0;">{{ user.first_name }} {{ user.last_name }}</b><br>
+        <b>Digital and Estimating Engineer</b> | Balfour Beatty Ireland<br>
+        <br>
+        <b>T:</b> +353 1 867 3770 | <b>M:</b> +353 87 105 6775<br>
+        <b>Email:</b> <a href="mailto:marek.kubiak@balfourbeatty.com">marek.kubiak@balfourbeatty.com</a><br>
+        <br>
+        <b>Address:</b> City Junction Business Park, Northern Cross, Malahide Road, Dublin 17, Ireland<br>
+        <b>Website:</b> <a href="https://www.balfourbeatty.com/ireland/" target="_blank">www.balfourbeatty.com/ireland/</a>
+    {% endif %}
+</div>

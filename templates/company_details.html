@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>BBI DB - Company Details</title>
+{% endblock %}
+
+{% block body %}
+
+    <div class="container-fluid">
+        <h4><span class="glyphicon glyphicon-chevron-left"></span> <a href="{% url 'bbidb:companies' %}">Go back to
+            Companies</a>
+        </h4>
+
+        {% if company.company_logo %}
+            <p>
+                <img src="{{ company.company_logo.url }}" style="max-height: 100px;">
+            </p>
+        {% endif %}
+
+
+        <h3>Company details</h3> <a href="{% url 'bbidb:company_update' company.id %}">Edit</a><br>
+
+        <table class="bbidb_details">
+            <tr>
+                <td class="bbidb_details-label">Company Name:</td>
+                <td class="bbidb_details-info">{{ company.name }}</td>
+
+                <td class="bbidb_details-label">Company Phone:</td>
+                <td class="bbidb_details-info">
+                    {% if company.head_phone %}
+                        {{ company.head_phone }}
+                    {% else %}
+                        Not added
+                    {% endif %}
+                </td>
+            </tr>
+
+            <tr>
+                <td>Date Added:</td>
+                <td>{{ company.date_added }}</td>
+
+                <td>Company Email:</td>
+                <td>
+                    {% if company.head_email %}
+                        {{ company.head_email }}
+                    {% else %}
+                        Not added
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>Date Updated:</td>
+                <td>
+                    {% if company.date_updated %}
+                        {{ company.date_updated }}
+                    {% else %}
+                        Never updated
+                    {% endif %}
+                </td>
+
+                <td>Company Website:</td>
+                <td>
+                    {% if company.website %}
+                        <a href="{{ company.website }}" target="_blank">
+                            {{ company.website }}
+                        </a>
+                    {% else %}
+                        Not added
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>Address:</td>
+                <td class="bbidb_details-remarks" colspan="3">
+                    {% if company.head_address %}
+                        {{ company.head_address|linebreaks }}
+                    {% else %}
+                        Not added
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>Remarks:</td>
+                <td class="bbidb_details-remarks" colspan="3">
+                    {% if company.remarks %}
+                        {{ company.remarks|linebreaks }}
+                    {% else %}
+                        No remarks
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+
+        <br>
+        <h3>Contacts associated with this company:</h3>
+        <br>
+
+        <table id="company_contacts" class="display" border='2' align="center" style="width:100%">
+
+        <caption><i>Associated Contacts</i></caption>
+
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Contact</th>
+                <th>In Projects</th>
+                <th>Status</th>
+                <th>Remarks</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            {% for company_contact in contacts %}
+                {% if  company_contact.name != "None" %}
+                    <tr>
+                    <TD class="c3" align="center">
+                        <a href="{% url 'bbidb:contact_details' company_contact.id %}">
+                            <strong style="font-size: 22px">{{ company_contact.name }}
+                            {% if company_contact.surname %}
+                                {{ company_contact.surname }}
+                            {% endif %}
+                            </strong></a><br>
+                            {% if company_contact.role %}
+                                {{ company_contact.role }}
+                            {% endif %}
+                    </TD>
+                    <TD class="c3" align="center">
+                        {% if company_contact.phone %}
+                            Phone: {{ company_contact.phone }}<br>
+                        {% endif %}
+                        {% if company_contact.mobile %}
+                            Mobile: {{ company_contact.mobile }}<br>
+                        {% endif %}
+                        {% if company_contact.email %}
+                            Email: {{ company_contact.email }}
+                        {% endif %}
+                    </TD>
+                    <TD class="c3" align="center">
+                        {% for key, value in project_contacts.items %}
+                            {% if key == company_contact %}
+                                {% for project_contact in value %}
+                                    <a href="{% url 'bbidb:project_contacts' project_contact.project.id %}">
+                                        {{ project_contact.project.name }} - {{ project_contact.works.name }}
+                                    </a><br>
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                    </TD>
+                    <TD class="c3" align="center">
+                        {% if company_contact.archivised == True %}
+                            Archivised
+                        {% else %}
+                            Active
+                        {% endif %}
+                    </TD>
+                    <TD class="c3" align="center">{{ company_contact.remarks|linebreaks }}</TD>
+                {% endif %}
+            </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+        <hr>
+
+    </div>
+
+{% endblock %}
+
+{% block js %}
+
+    <script>
+
+        $(document).ready(function () {
+            $('#company_contacts').DataTable({
+                    dom: 'B<"clear">lfrtip',
+                    buttons: {
+                        name: 'primary',
+                        buttons: ['copy', 'csv', 'excel', 'pdf']
+                    }
+                }
+            );
+        });
+
+    </script>
+
+{% endblock %}

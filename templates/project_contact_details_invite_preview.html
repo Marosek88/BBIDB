@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>BBI DB - Test</title>
+{% endblock %}
+
+{% block body %}
+
+    <div class="container-fluid">
+        <h4><span class="glyphicon glyphicon-chevron-left"></span> Go back to <a
+                href="{% url 'bbidb:project_contacts' project_contact.project.id %}">{{ project_contact.project.name }}</a>
+            <span class="glyphicon glyphicon-chevron-left"></span> <a
+                    href="{% url 'bbidb:project_contact_message_manage' project_contact.id %}">
+                {% if project_contact.contact.name %}
+                    {{ project_contact.contact.name }} {{ project_contact.contact.surname }}
+                {% else %}
+                    Info for
+                {% endif %}
+                {{ project_contact.contact.company.name }} Message Manage</a>
+        </h4>
+        <table border="1">
+            <tr>
+                <td style="padding: 10px;">
+                    <b>to:</b> {{ project_contact.contact.email }}<br>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 10px;">
+                    <b>cc:</b> {{ project.email_cc }}<br>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 10px;">
+                    <b>subject:</b> {{ project.name }} - Invitation to Tender<br>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 10px;">
+                    {% include 'sending/invite_render.html' %}
+                </td>
+            </tr>
+        </table>
+        <br>
+
+    </div>
+
+
+{% endblock %}

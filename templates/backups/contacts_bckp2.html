@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>BBI DB - Contacts</title>
+{% endblock %}
+
+{% block body %}
+
+    <div class="container-fluid">
+
+    {#        <form action="{% url 'bbidb:add_to_project' %}" method="POST">#}
+    {#            {% csrf_token %}#}
+    {#            {% for contact in all_contacts %}#}
+    {#                <input type="radio" id="contact{{ forloop.counter }}" name="contact" value="{{ contact.id }}"/>#}
+    {#                <a href="{% url 'bbidb:contact_details' contact.id %}">#}
+    {#                    <label for="contact{{ forloop.counter }}">#}
+    {#                        {{ contact.category.name }} | {{ contact.company.name }}#}
+    {#                        | {{ contact.name }} | {{ contact.surname }} |#}
+    {#                        {{ contact.date_used }}#}
+    {#                    </label></a><br>#}
+    {#            {% endfor %}#}
+    {#            <input type="submit" value="To Project">#}
+    {#        </form>#}
+
+    {% comment %}    {% for contact in all_contacts %}
+        <a href="{% url 'bbidb:contact_details' contact.id %}">{{ contact.category.name }}
+            | {{ contact.company.name }}
+            | {{ contact.name }} | {{ contact.surname }} |
+            {{ contact.date_used }}</a> <a href="{% url 'bbidb:contact_update' contact.id %}">Edit</a>
+        <form action="{% url 'bbidb:contact_delete' contact.id %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="contact_id" value="{{ contact.id }}"/>
+            <button type="submit" class="btn btn-default btn-sm">
+                <span class="glyphicon glyphicon-trash"></span>
+            </button>
+        </form>
+        <br>
+    {% endfor %}{% endcomment %}
+
+    <div class="container">
+    {% if message %}
+        <h3 style="color: orange">{{ message }}</h3>
+    {% endif %}
+    <h1><i class="fas fa-chalkboard-teacher"></i> BBIDB Contacts List </h1>
+    <p><a href="{% url 'bbidb:contact_add' %}"><h3>Add Contact</h3></a></p>
+    <hr>
+
+    <form action="{% url 'bbidb:add_to_project' %}" method="post" id="add_to_project_form">
+        {% csrf_token %}
+        <p>
+            <select name="project_no" title="Select Project" required>
+                {% for project in projects %}
+                    <option name="project" value="-1" hidden>Choose Project</option>
+                    <option name="project" value="{{ project.id }}">{{ project.name }}</option>
+                {% endfor %}
+            </select>
+            <input type="submit" value="Add to Project">
+        </p>
+    </form>
+
+    <table id="contacts_table" class="display" border='2' align="center" style="width:100%">
+
+        <caption><i>BBIDB Contacts</i></caption>
+
+        <thead>
+        <tr>
+            <th>Select</th>
+            <th>Category</th>
+            <th>Company</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Mobile</th>
+            <th>Email</th>
+            <th>Remarks</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </tr>
+        </thead>
+
+
+        <tbody>
+        {#        <tr>#}
+
+        {% for contact in contacts %}
+            {% if  contact.name != "None" %}
+                <tr>
+                <TD class="c3" align="center">
+                    <input class="form-check-input" type="checkbox" name="contact" value="{{ contact.id }}"
+                           form="add_to_project_form" title="Select">
+                </TD>
+                <TD class="c3" align="center">{{ contact.category.name }}</TD>
+                <TD class="c3" align="center">{{ contact.company.name }}</TD>
+                <TD class="c3" align="center"><a
+                        href="{% url 'bbidb:contact_details' contact.id %}">{{ contact.name }} {{ contact.surname }}</a>
+                </TD>
+                <TD class="c3" align="center">{{ contact.phone }}</TD>
+                <TD class="c3" align="center">{{ contact.mobile }}</TD>
+                <TD class="c3" align="center">{{ contact.email }}</TD>
+                <TD class="c3" align="center">{{ contact.remarks }}</TD>
+                <TD class="c3" align="center">
+                    <a href="{% url 'bbidb:contact_update' contact.id %}">
+                        <button type="" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </button>
+                    </a></TD>
+                <TD class="c3" align="center">
+                    <form action="{% url 'bbidb:contact_delete' contact.id %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="contact_id" value="{{ contact.id }}"/>
+                        <button type="submit" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </button>
+                    </form>
+                </TD>
+
+            {% endif %}
+        </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+    <hr>
+{% endblock %}
+{% block js %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.18/af-2.3.3/b-1.5.6/b-colvis-1.5.6/b-html5-1.5.6/b-print-1.5.6/cr-1.5.0/fh-3.1.4/kt-2.5.0/r-2.2.2/rg-1.1.0/sc-2.0.0/sl-1.3.0/datatables.min.css"/>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+    <script type="text/javascript"
+            src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.18/af-2.3.3/b-1.5.6/b-colvis-1.5.6/b-html5-1.5.6/b-print-1.5.6/cr-1.5.0/fh-3.1.4/kt-2.5.0/r-2.2.2/rg-1.1.0/sc-2.0.0/sl-1.3.0/datatables.min.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+            $('#contacts_table').DataTable({
+                    dom: 'B<"clear">lfrtip',
+                    buttons: {
+                        name: 'primary',
+                        buttons: ['copy', 'csv', 'excel', 'pdf']
+                    }
+                }
+            );
+        });
+
+    </script>
+    </div>
+
+    <p>All contacts count: {{ contacts.count }} </p>
+    <p>
+        {% for company in companies %}
+            Count of contacts with {{ company }}: {{ company.contact_set.count }}
+            <br>
+        {% endfor %}
+    </p>
+    <p>
+        {% for category in categories %}
+            Count of contacts for {{ category }}: {{ category.contact_set.count }}
+            <br>
+        {% endfor %}
+    </p>
+
+    </div>
+
+{% endblock %}

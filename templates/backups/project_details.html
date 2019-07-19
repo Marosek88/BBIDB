@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>BBI DB - {{ project.name }} - Project Details</title>
+{% endblock %}
+
+{% block body %}
+
+{#    <h3>Project details go here</h3>#}
+{#    <p>#}
+{#        Name: {{ project.name }} <br>#}
+{#        Status: {{ project.status }} <br>#}
+{#        Description: {{ project.description }} <br>#}
+{#        Tender Submission: {{ project.tender_submission }} <br>#}
+{#        Contract Start: {{ project.contract_start }} <br>#}
+{#    </p>#}
+
+    <div class="container-fluid">
+    {% if message %}
+        <h3 style="color: orange">{{ message }}</h3>
+    {% endif %}
+    <h1><i class="fas fa-chalkboard-teacher"></i> BBIDB Project Contacts List </h1>
+    <p><a href="{% url 'bbidb:company_add' %}"><h3>Add Contact to this Project</h3></a></p>
+    <hr>
+
+    <table id="project_contacts_table" class="display" border='2' align="center" style="width:100%">
+
+        <caption><i>BBIDB Project Contacts List</i></caption>
+
+        <thead>
+        <tr>
+            <th>Logo</th>
+            <th>Category</th>
+            <th>Company</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Website</th>
+            <th>Invite Sent</th>
+            <th>Clarification Required</th>
+            <th>Not Pricing</th>
+            <th>Quotation Received</th>
+            <th>Remarks</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        {% for project_contact in project_contacts %}
+            {% if  project_contact.name != "None" %}
+                <tr>
+                <TD class="c3" align="center"><a
+                        href="{% url 'bbidb:project_contact_details' project_contact.id %}"><img
+                        src="{{ project_contact.contact.company.company_logo.url }}"
+                        class="img-thumbnail"></a></TD>
+                <TD class="c3" align="center">{{ project_contact.contact.category.name }}</TD>
+                <TD class="c3" align="center">{{ project_contact.contact.company.name }}</TD>
+                <TD class="c3" align="center"><a
+                        href="{% url 'bbidb:project_contact_details' project_contact.id %}">{{ project_contact.contact.name }} {{ project_contact.contact.surname }}</a>
+                </TD>
+                <TD class="c3" align="center">{{ project_contact.contact.phone }}</TD>
+                <TD class="c3" align="center">{{ project_contact.contact.email }}</TD>
+                <TD class="c3" align="center">{{ project_contact.contact.company.website }}</TD>
+                <TD class="c3" align="center">
+                    {% if project_contact.email_sent == True %}
+                        Yes
+                    {% else %}
+                        No
+                    {% endif %}
+                </TD>
+                <TD class="c3" align="center">
+                    {% if project_contact.required_clarification == True %}
+                        Yes
+                    {% else %}
+                        No
+                    {% endif %}
+                </TD>
+                <TD class="c3" align="center">
+                    {% if project_contact.not_interested == True %}
+                        Yes
+                    {% else %}
+                        No
+                    {% endif %}
+                </TD>
+                <TD class="c3" align="center">{{ project_contact.quotation_received }}</TD>
+                <TD class="c3" align="center">{{ project_contact.remarks }}</TD>
+                <TD class="c3" align="center">
+                    <a href="{% url 'bbidb:project_contact_update' project_contact.id %}">
+                        <button type="" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </button>
+                    </a></TD>
+                <TD class="c3" align="center">
+                    <form action="{% url 'bbidb:project_contact_delete' project_contact.id %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="contact_id" value="{{ project_contact.id }}"/>
+                        <button type="submit" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </button>
+                    </form>
+                </TD>
+
+            {% endif %}
+        </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+    <hr>
+{% endblock %}
+{% block js %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.18/af-2.3.3/b-1.5.6/b-colvis-1.5.6/b-html5-1.5.6/b-print-1.5.6/cr-1.5.0/fh-3.1.4/kt-2.5.0/r-2.2.2/rg-1.1.0/sc-2.0.0/sl-1.3.0/datatables.min.css"/>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+    <script type="text/javascript"
+            src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.18/af-2.3.3/b-1.5.6/b-colvis-1.5.6/b-html5-1.5.6/b-print-1.5.6/cr-1.5.0/fh-3.1.4/kt-2.5.0/r-2.2.2/rg-1.1.0/sc-2.0.0/sl-1.3.0/datatables.min.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+            $('#project_contacts_table').DataTable({
+                    dom: 'B<"clear">lfrtip',
+                    buttons: {
+                        name: 'primary',
+                        buttons: ['copy', 'csv', 'excel', 'pdf']
+                    }
+                }
+            );
+        });
+
+    </script>
+    </div>
+
+
+    {#        <h3>Contacts list</h3>#}
+    {#        <p>#}
+    {#            {% for project_contact in project_list %}#}
+    {#                {{ project_contact.contact.category.name }} | {{ project_contact.contact.company.name }} |#}
+    {#                {{ project_contact.contact.name }} | {{ project_contact.contact.surname }} |#}
+    {#                {{ project_contact.contact.mobile }} | {{ project_contact.contact.email }} |#}
+    {#                {{ project_contact.contact.remarks }} | {{ project_contact.email_sent }}#}
+    {#                <br>#}
+    {#            {% endfor %}#}
+    {#        </p>#}
+
+{% endblock %}

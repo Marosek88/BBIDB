@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>BBI DB - User Profile</title>
+{% endblock %}
+
+{% block body %}
+
+    <div style="padding-left: 20px;">
+    <h1>Hello, {{ user.first_name }}!</h1>
+    </div>
+    <br>
+
+    <div class="container-fluid options_box">
+    <form action="#" method="post" id="action_form">
+        {% csrf_token %}
+
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <label class="btn btn-primary" data-toggle="collapse" data-target="#profile_info">
+                <input type="radio" name="action_no" value="profile_info" autocomplete="off"> Profile Info
+            </label>
+            <label class="btn btn-primary" data-toggle="collapse" data-target="#profile_projects">
+                <input type="radio" name="action_no" value="profile_projects" autocomplete="off"> Projects
+            </label>
+            <label class="btn btn-primary" data-toggle="collapse" data-target="#profile_history">
+                <input type="radio" name="action_name" value="History" autocomplete="off"> History
+            </label>
+        </div>
+
+    </form>
+    </div>
+
+    <div class="collapse" id="profile_info">
+    {% include 'users/profile_info.html' %}
+    </div>
+
+    <div class="collapse" id="profile_projects">
+    {% include 'users/profile_projects.html' %}
+    </div>
+
+    <div class="collapse" id="profile_history">
+    {% include 'users/profile_history.html' %}
+    </div>
+
+
+
+    <br>
+
+{% endblock %}

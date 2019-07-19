@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>BBI DB - {{ project_contact.project.name }} - Message Manage</title>
+{% endblock %}
+
+{% block body %}
+
+        <h4><span class="glyphicon glyphicon-chevron-left"></span> <a
+                href="{% url 'bbidb:project_contacts' project_contact.project.id %}">Go back
+            to {{ project_contact.project.name }}</a>
+        </h4>
+
+        <h2>
+            Message to {{ project_contact.contact.name }}
+            {% if project_contact.contact.surname %}{{ project_contact.contact.surname }}{% endif %}
+            for {{ project_works.name }}
+        </h2>
+
+        <hr>
+
+        <form action="{% url 'bbidb:project_contact_message_update' project_contact.id %}" method="post" id="email">
+            {% csrf_token %}
+
+            <table>
+                <tr>
+                    <td width="100">To address:</td>
+                    <td><input type="text" name="to" value="{{ project_contact.contact.email }}" style="width: 800px;"
+                               title="Edit Contact to change this field" disabled></td>
+                </tr>
+                <tr>
+                    <td>CC:</td>
+                    <td><input type="text" name="cc"
+                               value="{% if project.email_cc %}{{ project.email_cc }}{% endif %}"
+                               style="width: 800px;" title="CC"></td>
+                </tr>
+                <tr>
+                    <td>Subject:</td>
+                    <td><input type="text" name="subject" value="{{ project.name }} - Tender Invitation"
+                               style="width: 800px;"
+                               title="Edit Project name to change the subject" disabled>
+                    </td>
+                </tr>
+            </table>
+            <br>
+            <table>
+                <tr>
+                    <td width="100">Greeting</td>
+                    <td><input type="text" name="greeting" value="{% if project.email_greeting %}{{ project.email_greeting }}{% endif %}"
+                               style="width: 400px;" title="Greeting"><input type="text" name="name" value="{% if project_contact.contact.name %}{{ project_contact.contact.name }}{% endif %}" style="width: 400px;"
+                               title="Edit Contact name to change this field" disabled>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><hr></td>
+                </tr>
+                <tr>
+                    <td>
+                        Personal message:
+                    </td>
+                    <td>
+                        <textarea style="width: 800px; height: 200px;" name="personal_message"
+                                  title="Personal Message">{% if project_contact.email_personal_message %}{{ project_contact.email_personal_message }}{% endif %}</textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><hr></td>
+                </tr>
+                <tr>
+                    <td>Invitation:</td>
+                    <td><input type="text" name="invitation1"
+                               value="{% if project.email_invitation1 %}{{ project.email_invitation1 }}{% endif %}" title="Invitation1"
+                               style="width: 400px;"><input type="text" name="project_name" value="{% if project.name %}{{ project.name }}{% endif %}" style="width: 400px;"
+                               title="Change project name to change this field" disabled><br>
+                        <input type="text" name="invitation2"
+                               value="{% if project.email_invitation2 %}{{ project.email_invitation2 }}{% endif %}"
+                               style="width: 400px;" title="Invitation2"><input type="text" name="category" value="{% if project_works.name %}{{ project_works.name }}{% endif %}"
+                               style="width: 400px;" title="Category">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Works Package message:
+                    </td>
+                    <td>
+                        <textarea style="width: 800px; height: 200px;" name="project_works_message" title="Works Package Message">{% if project_works.email_message %}{{ project_works.email_message }}{% endif %}</textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><hr></td>
+                </tr>
+                <tr>
+                    <td width="100">Description:</td>
+                    <td>
+                        <input type="text" name="description1"
+                               value="{% if project.email_description1 %}{{ project.email_description1 }}{% endif %}" style="width: 800px;"
+                               title="Description Header"><br>
+                        <textarea style="width: 800px; height: 200px;" name="description2" title="Works Description">{% if project.description %}{{ project.description }}{% endif %}</textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><hr></td>
+                </tr>
+                <tr>
+                    <td>Attachments:</td>
+                    <td>
+                        <input type="text" name="attachment1" value="{% if project_works.email_attachment_message %}{{ project_works.email_attachment_message }}{% endif %}"
+                               style="width: 800px;" title="Attachment1"><br>
+                        <input type="text" name="attachment_category_specific"
+                               value="{% if project_works.email_category_attachment %}{{ project_works.email_category_attachment }}{% endif %}"
+                               style="width: 800px;" title="Attachment Category Specific"><br>
+                        <input type="text" name="attachment2" value="{% if project.email_attachment2 %}{{ project.email_attachment2 }}{% endif %}"
+                               style="width: 800px;" title="Attachment2"><br>
+                        <input type="text" name="attachment_full"
+                               value="{% if project_contact.project.email_attachment_full %}{{ project_contact.project.email_attachment_full }}{% endif %}"
+                               style="width: 800px;" title="Attachment Full"><br>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><hr></td>
+                </tr>
+                <tr>
+                    <td width="100">Notes:</td>
+                    <td>
+                        <input type="text" name="note1" value="{% if project.email_note1 %}{{ project.email_note1 }}{% endif %}" style="width: 800px;"
+                               title="Note1"><br>
+                        <input type="text" name="note2" value="{% if project.email_note2 %}{{ project.email_note2 }}{% endif %}"
+                               style="width: 400px" title="Note2"><input type="text" name="quotation_deadline"
+                               value="{% if project.email_quotation_deadline %}{{ project.email_quotation_deadline|date:"m-d-Y" }}{% endif %}"
+                               style="width: 400px;" title="Edit project to change this field" disabled><br>
+                        <input type="text" name="note3" value="{% if project.email_note3 %}{{ project.email_note3 }}{% endif %}"
+                               style="width: 800px;" title="Note3"><br>
+                        <textarea style="width: 800px; height: 200px;" name="general_notes"
+                                  title="General Notes">{% if project.email_general_notes %}{{ project.email_general_notes }}{% endif %}</textarea>
+                    </td>
+                </tr>
+            </table>
+        <br>
+
+            <input type="submit" class="btn btn-primary" value="Update">
+            <a href="{% url 'bbidb:project_contact_details_invite_preview' project_contact.id %}"
+               class="btn btn-primary" role="button">
+                Invite Preview
+            </a>
+
+        </form>
+
+{% endblock %}

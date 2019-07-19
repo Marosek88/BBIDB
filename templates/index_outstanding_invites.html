@@ -1,0 +1,55 @@
+<table id="index_invites" class="display" border='2' align="center" style="width:100%">
+    <thead>
+    <tr>
+        <th>Contact</th>
+        <th>For Project</th>
+        <th>Remarks</th>
+    </tr>
+    </thead>
+
+    <tbody>
+
+    {% for project_contact in my_project_contacts_to_send %}
+        {% if  project_contact.contact.name != "None" %}
+            <tr>
+            <TD class="c3" align="center">
+                <a href="{% url 'bbidb:project_contact_details' project_contact.id %}">
+                    {{ project_contact.contact.name }}
+                    {% if project_contact.contact.surname %}
+                        {{ project_contact.contact.surname }}
+                    {% endif %}
+                </a>
+            </TD>
+            <TD class="c3" align="center">
+            <a href="{% url 'bbidb:project_contacts' project_contact.project.id %}">
+                {{ project_contact.project.name }}
+            </a>
+            </TD>
+            <TD class="c3" align="center">{{ project_contact.remarks|linebreaks }}</TD>
+        {% endif %}
+    </tr>
+    {% endfor %}
+
+    </tbody>
+</table>
+<hr>
+
+{% block js %}
+
+    <script>
+
+        $(document).ready(function () {
+            $('#index_invites').DataTable({
+                    dom: 'B<"clear">lfrtip',
+                    buttons: {
+                        name: 'primary',
+                        buttons: ['copy', 'csv', 'excel', 'pdf']
+                    }
+                }
+            );
+        });
+
+
+    </script>
+
+{% endblock %}

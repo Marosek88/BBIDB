@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>BBI DB - {{ project_contact.project.name }} - Project Contact Details</title>
+{% endblock %}
+
+{% block body %}
+
+    <div class="container-fluid">
+        <h4><span class="glyphicon glyphicon-chevron-left"></span> <a
+                href="{% url 'bbidb:project_contacts' project_contact.project.id %}">Go back
+            to {{ project_contact.project.name }}</a>
+        </h4>
+        <h2>Project Contact Details</h2>
+        <h3><a href="{% url 'bbidb:company_details' project_contact.contact.company.id %}"><img
+                src="{{ project_contact.contact.company.company_logo.url }}"
+                class="img-thumbnail"> {{ project_contact.contact.company.name }}</a>
+            | {{ project_contact.contact.category.name }}
+            |
+            <a href="{% url 'bbidb:contact_details' project_contact.contact.id %}">{{ project_contact.contact.name }} {{ project_contact.contact.surname }}</a>
+        </h3>
+        <hr>
+
+    Need to come up with some data to put in here
+
+    </div>
+
+{% endblock %}

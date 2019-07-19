@@ -1,0 +1,48 @@
+<table id="index_projects" class="display" border='2' align="center" style="width:100%">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Tender Submission</th>
+        <th>Remarks</th>
+    </tr>
+    </thead>
+
+    <tbody>
+
+    {% for project in open_projects %}
+        {% if  project.name != "None" %}
+            <tr>
+            <TD class="c3" align="center">
+                <a href="{% url 'bbidb:project_contacts' project.id %}">{{ project.name }}</a>
+            </TD>
+            <TD class="c3" align="center">
+                {{ project.tender_submission }}
+            </TD>
+            <TD class="c3" align="center">{{ project.remarks|linebreaks }}</TD>
+        {% endif %}
+    </tr>
+    {% endfor %}
+
+    </tbody>
+</table>
+<hr>
+
+{% block js %}
+
+    <script>
+
+        $(document).ready(function () {
+            $('#index_projects').DataTable({
+                    dom: 'B<"clear">lfrtip',
+                    buttons: {
+                        name: 'primary',
+                        buttons: ['copy', 'csv', 'excel', 'pdf']
+                    }
+                }
+            );
+        });
+
+
+    </script>
+
+{% endblock %}

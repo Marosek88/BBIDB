@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>BBI DB - Login</title>
+{% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block body %}
+
+    <div class="container-fluid">
+
+    <h3>Please log in to access the website</h3>
+
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Log in</legend>
+                {{ form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Login</button>
+            </div>
+        </form>
+        <div class="border-top pt-3">
+            <small class="text-muted">
+                Need an account? Contact Marek Kubiak at marek.kubiak@balfourbeatty.com to get an access.<br>
+                Forgot your password? Go to <a href="{% url 'password_reset' %}">Password Reset</a>
+            </small>
+        </div>
+    </div>
+
+{% endblock %}

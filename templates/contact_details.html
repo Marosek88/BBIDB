@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>BBI DB - Contacts</title>
+{% endblock %}
+
+{% block body %}
+
+    <h4><span class="glyphicon glyphicon-chevron-left"></span> <a href="{% url 'bbidb:contacts' %}">Go back to
+        Contacts</a>
+    </h4>
+
+    {% if contact.company.company_logo %}
+        <p>
+            <img src="{{ contact.company.company_logo.url }}" style="max-height: 100px;">
+        </p>
+    {% endif %}
+
+
+    <h3>Contacts details</h3> <a href="{% url 'bbidb:contact_update' contact.id %}">Edit</a><br>
+
+    <table class="bbidb_details">
+        <tr>
+            <td class="bbidb_details-label">Name:</td>
+            <td class="bbidb_details-info">{{ contact.name }} {% if contact.surname %}{{ contact.surname }}{% endif %}</td>
+
+            <td class="bbidb_details-label">Phone:</td>
+            <td class="bbidb_details-info">
+                {% if contact.phone or contact.mobile %}
+                    {% if contact.phone %}
+                        Landline: {{ contact.phone }}<br>
+                    {% endif %}
+                    {% if contact.mobile %}
+                        Mobile: {{ contact.mobile }}
+                    {% endif %}
+                {% else %}
+                    Not added
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>Date Added:</td>
+            <td>{{ contact.date_added }}</td>
+
+            <td>Email:</td>
+            <td>
+                {% if contact.email %}
+                    {{ contact.email }}
+                {% else %}
+                    Not added
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>Date Updated:</td>
+            <td>
+                {% if contact.date_updated %}
+                    {{ contact.date_updated }}
+                {% else %}
+                    Never updated
+                {% endif %}
+            </td>
+
+            <td>Company Website:</td>
+            <td>
+                {% if contact.company.website %}
+                    <a href="{{ contact.company.website }}" target="_blank">
+                        {{ contact.company.website }}
+                    </a>
+                {% else %}
+                    Not added
+                {% endif %}
+            </td>
+        </tr>
+
+        <tr>
+            <td class="bbidb_details-label">Remarks:</td>
+            <td class="bbidb_details-remarks" colspan="3">
+                {% if contact.remarks %}
+                    {{ contact.remarks|linebreaks }}
+                {% else %}
+                    No remarks
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+
+    <br>
+    <h3>Projects where this contact was used:</h3>
+    <br>
+
+
+    <table id="contacts_table" class="display" border='2' align="center" style="width:100%">
+
+        <caption><i>Associated Projects</i></caption>
+
+        <thead>
+        <tr>
+            <th>Works</th>
+            <th>Project Name</th>
+            <th>Contact Status</th>
+            <th>Remarks</th>
+        </tr>
+        </thead>
+
+
+        <tbody>
+
+        {% for project_contact in project_contacts %}
+            {% if  project_contact.name != "None" %}
+                <tr>
+
+                <TD class="c3" align="center">
+                    {{ project_contact.works.name }}
+                </TD>
+                <TD class="c3" align="center">
+                    <a href="{% url 'bbidb:project_contacts' project_contact.project.id %}">
+                        {{ project_contact.project.name }}
+                    </a>
+                </TD>
+                <TD class="c3" align="center">
+                    {% if project_contact.archivised %}
+                        Archivised
+                    {% else %}
+                        Active
+                    {% endif %}
+                </TD>
+                <TD class="c3" align="left">
+                {% if project_contact.email_sent_date %}
+                    Invite sent on {{ contact.date_updated }}<br>
+                {% endif %}
+                {% if project_contact.requires_clarification_date %}
+                    Asked for clarification on {{ project_contact.requires_clarification_date }}<br>
+                {% endif %}
+                {% if project_contact.will_price_date %}
+                    Said that will price on {{ project_contact.will_price_date }}<br>
+                {% elif project_contact.not_interested_date %}
+                    Said that will NOT price on {{ project_contact.not_interested_date }}<br>
+                {% endif %}
+                {% if project_contact.quotation_received %}
+                    Quotation submitted on {{ project_contact.quotation_received }}<br>
+                {% else %}
+                    Quotation was NOT submitted<br>
+                {% endif %}
+
+                <br>
+                {{ project_contact.remarks|linebreaks }}
+
+
+            {% endif %}
+        </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+    <hr>
+
+{% endblock %}
+
+{% block js %}
+
+    <script>
+
+        $(document).ready(function () {
+            $('#contacts_table').DataTable({
+                    dom: 'B<"clear">lfrtip',
+                    buttons: {
+                        name: 'primary',
+                        buttons: ['copy', 'csv', 'excel', 'pdf']
+                    }
+                }
+            );
+        });
+
+    </script>
+
+{% endblock %}
